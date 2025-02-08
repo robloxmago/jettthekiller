@@ -1,0 +1,98 @@
+local function createTool()
+    local tool = Instance.new("Tool")
+    tool.Name = "칼휘두르기(멈추고쓰기)"  -- Alterando o nome da ferramenta
+    tool.RequiresHandle = true
+    tool.Parent = game.Players.LocalPlayer.Backpack
+
+    -- Criando um "Handle" invisível para a ferramenta
+    local handle = Instance.new("Part")
+    handle.Name = "Handle"
+    handle.Size = Vector3.new(1, 1, 1)
+    handle.Transparency = 1  -- Torna o handle invisível
+    handle.Anchored = false
+    handle.CanCollide = false
+    handle.Parent = tool
+
+    -- Função que será chamada quando a ferramenta for ativada
+    tool.Activated:Connect(function()
+        local character = game.Players.LocalPlayer.Character
+        if character then
+            -- Acessa a pasta de animações do personagem
+            local animate = character:FindFirstChild("Animate")
+            if animate then
+                -- Substitui a animação de "idle" com a nova animação
+                local animation = Instance.new("Animation")
+                animation.AnimationId = "rbxassetid://243642696"
+                local humanoid = character:FindFirstChild("Humanoid")
+                if humanoid then
+                    humanoid:LoadAnimation(animation):Play()
+                    print("Animação de dança executada com sucesso!")
+                end
+            end
+        end
+    end)
+end
+
+-- Função para criar a GUI
+local function createGUI()
+    local ScreenGui = Instance.new("ScreenGui")
+    local DanceButton = Instance.new("TextButton")
+
+    -- Configurando a GUI
+    ScreenGui.Name = "DanceGUI"  -- Nome da GUI
+    ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+    -- Configurando o botão
+    DanceButton.Name = "DanceButton"
+    DanceButton.Parent = ScreenGui
+    DanceButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    DanceButton.Size = UDim2.new(0, 120, 0, 60)
+    DanceButton.Position = UDim2.new(1, -120, 1, -250)
+    DanceButton.Text = "(클릭)by.이칠이"  -- Nome do botão
+    DanceButton.Font = Enum.Font.SourceSansBold
+    DanceButton.TextSize = 15
+
+    -- Função para executar a troca de animações ao clicar no botão
+    DanceButton.MouseButton1Click:Connect(function()
+        local character = game.Players.LocalPlayer.Character
+        if character then
+            -- Acessa a pasta de animações do personagem
+            local animate = character:FindFirstChild("Animate")
+            if animate then
+                -- Substituindo as animações padrão pelas novas
+                animate.climb.ClimbAnim.AnimationId = "rbxassetid://161235826"
+                animate.fall.FallAnim.AnimationId = "rbxassetid://233322916"
+                animate.idle.Animation1.AnimationId = "rbxassetid://90615149"
+                animate.idle.Animation2.AnimationId = "rbxassetid://90615149"
+                animate.jump.JumpAnim.AnimationId = "rbxassetid://233064613"
+                animate.run.RunAnim.AnimationId = "rbxassetid://252557606"
+                animate.walk.WalkAnim.AnimationId = "rbxassetid://252557606"
+                
+                -- Exibindo uma mensagem no console para confirmar que as animações foram trocadas
+                print("Animações atualizadas com sucesso!")
+            else
+                print("A pasta 'Animate' não foi encontrada no personagem.")
+            end
+        end
+    end)
+
+    return ScreenGui
+end
+
+-- Função para reiniciar a GUI quando o personagem morrer e renascer
+game.Players.LocalPlayer.CharacterAdded:Connect(function()
+    -- Verifica se a GUI já existe e a remove
+    local existingGui = game.Players.LocalPlayer.PlayerGui:FindFirstChild("DanceGUI")
+    if existingGui then
+        existingGui:Destroy()
+    end
+
+    -- Cria a GUI novamente
+    createGUI()
+end)
+
+-- Cria a ferramenta assim que o jogador entrar no jogo
+createTool()
+
+-- Cria a GUI imediatamente ao rodar o script
+createGUI()
